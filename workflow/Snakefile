@@ -1,0 +1,54 @@
+from snakemake.utils import min_version
+from pathlib import Path
+from dataclasses import dataclass
+
+
+min_version("9.1.0")
+
+
+configfile: "config/config.yaml"
+
+include: "rules/common.smk"
+
+
+@dataclass
+class Fastq(StructuredWildcard):
+    patient: str
+    sample_type: str
+    path: Path
+
+
+base_path = Path(config["base_path"])
+
+
+fastqs = [
+    Fastq(patient, sample_type, (base_path / path).resolve())
+    for patient in config["patient_ids"]
+    for sample_type, entry in config["sample_types"].items()
+    for path in base_path.glob(entry["pattern"].format(id=patient))
+]
+
+
+inputflags:
+    access.sequential
+
+
+rule all:
+    input:
+        collect(str(task("upload-fastqs", item="{fastq}")), fastq=fastqs),
+
+
+rule upload_fastq:
+    input:
+        Fastq.from_wildcard("fastq", field="path"),
+    output:
+        task("upload-fastqs", item="{fastq}"),
+    params:
+        entry=Fastq.from_wildcard("fastq"),
+    log:
+        "logs/upload/{fastq}.log",
+    resources:
+        upload=1
+    shell:
+        "{config[icav2]} projectdata upload {input} "
+        "/{params.entry.patient}_{params.entry.sample_type}/Fastq 2> {log}"

@@ -1,0 +1,19 @@
+__use_yte__: true
+
+base_path: "../raw"
+
+# Mapping of sample types to patterns for collecting FASTQ files
+sample_types:
+  Normal:
+    pattern: "20250211_LH00204_0029_A22TTJFLT3/fastq/{id}_N_*.fastq.gz"
+  FF:
+    pattern: "20250207_LH00204_0028_B22JF7VLT4/fastq/{id}_FF_*.fastq.gz"
+  FFPE:
+    pattern: "20250207_LH00204_0028_B22JF7VLT4/fastq/{id}_FFPE_*.fastq.gz"
+
+patient_ids:
+  ?for i in range(1, 8):
+    - ?i
+
+# path to icav2 executable
+icav2: "~/tools/icav2"
