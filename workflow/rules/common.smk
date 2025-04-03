@@ -1,3 +1,6 @@
+# Note: the code in here is part of a prototype for so-called structured wildcards
+# and task management that will soon be moved into the main Snakemake codebase.
+
 import hashlib
 from typing import Any, Optional, ClassVar, Self, Mapping
 from dataclasses import fields, Field, dataclass
