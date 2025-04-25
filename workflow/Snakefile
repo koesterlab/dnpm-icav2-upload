@@ -51,4 +51,4 @@ rule upload_fastq:
         upload=1
     shell:
         "{config[icav2]} projectdata upload {input} "
-        "/{params.entry.patient}_{params.entry.sample_type}/Fastq 2> {log}"
+        "/{params.entry.patient}_{params.entry.sample_type}/Fastq/ 2> {log}"
